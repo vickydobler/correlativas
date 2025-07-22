@@ -1,285 +1,341 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Malla Interactiva TUDAI 2024</title>
-<style>
-  :root {
-    --color-aprobada: #EBC9FF;
-    --color-habilitada: #C77DFF;
-    --color-bloqueada: #3C096C;
-    --color-texto: #fff;
-    --color-texto-aprobada: #4B007D;
-    --transition-time: 0.3s;
-  }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #121212;
-    margin: 0;
-    padding: 20px;
-    color: var(--color-texto);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
-  h1 {
-    margin-bottom: 10px;
-    text-align: center;
-  }
-  #malla {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-    width: 100%;
-    max-width: 960px;
-  }
-  .materia {
-    padding: 15px 20px 10px 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    user-select: none;
-    font-weight: 600;
-    font-size: 1.05rem;
-    box-shadow: 0 0 8px rgba(0,0,0,0.3);
-    transition:
-      background-color var(--transition-time),
-      color var(--transition-time),
-      text-decoration var(--transition-time);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 110px;
-    text-align: center;
-  }
-  .materia .titulo {
-    margin-bottom: 8px;
-  }
-  .bloqueada {
-    background-color: var(--color-bloqueada);
-    color: var(--color-texto);
-    cursor: default;
-  }
-  .habilitada {
-    background-color: var(--color-habilitada);
-    color: var(--color-texto);
-  }
-  .aprobada {
-    background-color: var(--color-aprobada);
-    color: var(--color-texto-aprobada);
-    text-decoration: line-through;
-  }
-  #resetBtn {
-    margin-top: 20px;
-    background-color: var(--color-habilitada);
-    border: none;
-    padding: 12px 24px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 8px;
-    color: var(--color-texto);
-    cursor: pointer;
-    box-shadow: 0 0 12px var(--color-habilitada);
-    transition: background-color 0.25s ease;
-  }
-  #resetBtn:hover {
-    background-color: #B55FEF;
-  }
-  .notas {
-    display: flex;
-    gap: 8px;
-    margin-top: 6px;
-    width: 100%;
-    justify-content: center;
-  }
-  .nota-input {
-    width: 48%;
-  }
-  input[type="number"] {
-    width: 100%;
-    border-radius: 6px;
-    border: none;
-    padding: 4px 8px;
-    font-size: 0.9rem;
-    text-align: center;
-  }
-  input[type="number"]:disabled {
-    background-color: #ddd;
-    color: #999;
-    cursor: not-allowed;
-  }
-  @media (max-width: 600px) {
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Malla TUDAI Interactiva</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9ebea; /* Nuevo color de fondo */
+      margin: 0;
+      padding: 15px;
+      color: #333;
+    }
+    h2 {
+      text-align: center;
+      margin: 5px 0 15px;
+      font-size: 1.2em;
+      color: #5f0f40;
+      font-weight: 500;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 10px;
+      padding-bottom: 15px;
+    }
+    .year-column {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      padding: 10px;
+      min-width: 240px;
+    }
+    .year-title {
+      text-align: center;
+      margin: 0 0 8px;
+      font-size: 1em;
+      color: #8e44ad;
+      font-weight: 500;
+    }
+    .cuatrimestre-title {
+      margin: 10px 0 6px;
+      font-size: 0.85em;
+      text-align: center;
+      color: #7d3c98;
+      font-weight: 500;
+      padding-bottom: 3px;
+      border-bottom: 1px dashed #d2b4de;
+    }
     .materia {
-      font-size: 0.95rem;
-      padding: 12px 15px 8px 15px;
-      min-height: 130px;
+      border-radius: 8px;
+      padding: 8px;
+      margin: 5px 0;
+      font-size: 0.82em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
     }
-    #malla {
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    .bloqueada {
+      background: #ebedef;
+      border-left: 4px dotted #bdc3c7;
+      color: #7f8c8d;
     }
-  }
-</style>
+    .desbloqueada {
+      background: #f5b7b1;
+      color: #78281f;
+      border-left: 4px solid #e74c3c;
+    }
+    .aprobada {
+      background: #e8daef;
+      color: #4a235a;
+      border-left: 4px solid #8e44ad;
+    }
+    .tachada {
+      text-decoration: line-through;
+      opacity: 0.8;
+    }
+    .notas {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+      margin-top: 6px;
+      font-size: 0.75em;
+    }
+    .notas input {
+      width: 48%;
+      padding: 3px 5px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      text-align: center;
+      font-size: 0.9em;
+      background: rgba(255,255,255,0.8);
+    }
+    .notas input::placeholder {
+      color: #95a5a6;
+      font-size: 0.8em;
+    }
+    .botones {
+      text-align: center;
+      margin: 15px 0 5px;
+    }
+    button {
+      background: #8e44ad;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-size: 0.85em;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background: #7d3c98;
+      transform: translateY(-1px);
+    }
+    .grid::-webkit-scrollbar {
+      height: 6px;
+    }
+    .grid::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    .grid::-webkit-scrollbar-thumb {
+      background: #c39bd3;
+      border-radius: 3px;
+    }
+  </style>
 </head>
 <body>
-<h1>Malla Interactiva TUDAI - Plan 2024</h1>
-<div id="malla"></div>
-<button id="resetBtn" title="Reiniciar progreso">Reiniciar progreso</button>
+  <h2>Malla Interactiva TUDAI</h2>
+  <div class="grid" id="malla"></div>
+  <div class="botones">
+    <button onclick="reiniciar()">Reiniciar Progreso</button>
+  </div>
 
-<script>
-  const materias = [
-    { codigo: "1.1", nombre: "Programación 1", correlativas: [] },
-    { codigo: "1.2", nombre: "Taller de Matemática Computacional", correlativas: [] },
-    { codigo: "1.3", nombre: "Inglés 1", correlativas: [] },
-    { codigo: "2.1", nombre: "Tecnología de la información en las organizaciones", correlativas: [] },
-    { codigo: "2.2", nombre: "Web 1", correlativas: ["1.1"] },
-    { codigo: "2.3", nombre: "Programación 2", correlativas: ["1.1"] },
-    { codigo: "2.4", nombre: "Inglés 2", correlativas: ["1.3"] },
-    { codigo: "2.5", nombre: "Seminario Tecnológico 1", correlativas: [] },
-    { codigo: "3.1", nombre: "Web 2", correlativas: ["2.2"] },
-    { codigo: "3.2", nombre: "Programación 3", correlativas: ["2.3"] },
-    { codigo: "3.3", nombre: "Introducción a las Metodologías de desarrollo de software", correlativas: ["2.1", "2.3"] },
-    { codigo: "3.4", nombre: "Bases de Datos", correlativas: ["1.1", "1.2"] },
-    { codigo: "3.5", nombre: "Seminario Tecnológico 2", correlativas: [] },
-    { codigo: "4.1", nombre: "Técnicas de documentación y validación", correlativas: ["3.3"] },
-    { codigo: "4.2", nombre: "Interfaces de usuario e Interacción", correlativas: ["1.2", "3.1", "2.3"] },
-    { codigo: "4.3", nombre: "Arquitecturas Web", correlativas: ["3.3", "3.1", "3.4"] },
-    { codigo: "4.4", nombre: "Configuración y desarrollo de aplicaciones en redes", correlativas: ["3.1"] },
-    { codigo: "4.5", nombre: "Seminario Tecnológico 3", correlativas: [] },
-    { codigo: "5.1", nombre: "Prácticas Profesionales (PPS)", correlativas: ["3.3"] }
-  ];
+  <script>
+    const materias = [
+      {
+        anio: "1° Año",
+        cuatris: [
+          {
+            nombre: "1° Cuatrimestre",
+            cursos: [
+              { nombre: "Programación 1", id: "1.1", correlativas: [] },
+              { nombre: "Taller de Matemática", id: "1.2", correlativas: [] },
+              { nombre: "Inglés 1", id: "1.3", correlativas: [] },
+            ],
+          },
+          {
+            nombre: "2° Cuatrimestre",
+            cursos: [
+              { nombre: "Tecnologías de la Información", id: "2.1", correlativas: [] },
+              { nombre: "Web 1", id: "2.2", correlativas: ["1.1"] },
+              { nombre: "Programación 2", id: "2.3", correlativas: ["1.1"] },
+              { nombre: "Inglés 2", id: "2.4", correlativas: ["1.3"] },
+              { nombre: "Seminario Tec. 1", id: "2.5", correlativas: [] },
+            ],
+          },
+        ],
+      },
+      {
+        anio: "2° Año",
+        cuatris: [
+          {
+            nombre: "1° Cuatrimestre",
+            cursos: [
+              { nombre: "Web 2", id: "3.1", correlativas: ["2.2"] },
+              { nombre: "Programación 3", id: "3.2", correlativas: ["2.3"] },
+              { nombre: "Metodologías de Desarrollo", id: "3.3", correlativas: ["2.1", "2.3"] },
+              { nombre: "Bases de Datos", id: "3.4", correlativas: ["1.1", "1.2"] },
+              { nombre: "Seminario Tec. 2", id: "3.5", correlativas: [] },
+            ],
+          },
+          {
+            nombre: "2° Cuatrimestre",
+            cursos: [
+              { nombre: "Documentación", id: "4.1", correlativas: ["3.3"] },
+              { nombre: "Interfaces de Usuario", id: "4.2", correlativas: ["1.2", "3.1", "2.3"] },
+              { nombre: "Arquitecturas Web", id: "4.3", correlativas: ["3.3", "3.1", "3.4"] },
+              { nombre: "Redes", id: "4.4", correlativas: ["3.1"] },
+              { nombre: "Seminario Tec. 3", id: "4.5", correlativas: [] },
+            ],
+          },
+        ],
+      },
+      {
+        anio: "3° Año",
+        cuatris: [
+          {
+            nombre: "1° Cuatrimestre",
+            cursos: [
+              { nombre: "Prácticas Profesionales", id: "5.1", correlativas: ["3.3"] },
+            ],
+          },
+        ],
+      },
+    ];
 
-  const STORAGE_KEY = "tudai2024_aprobadas";
-  const STORAGE_NOTAS = "tudai2024_notas";
-  const mallaDiv = document.getElementById("malla");
-  const resetBtn = document.getElementById("resetBtn");
+    const estado = JSON.parse(localStorage.getItem("estadoMaterias")) || {};
+    const malla = document.getElementById("malla");
 
-  let aprobadas = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  let notas = JSON.parse(localStorage.getItem(STORAGE_NOTAS)) || {};
-
-  function estaDesbloqueada(materia) {
-    if (aprobadas.includes(materia.codigo)) return true;
-    return materia.correlativas.every(c => aprobadas.includes(c));
-  }
-
-  function guardarEstado() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(aprobadas));
-  }
-
-  function guardarNotas() {
-    localStorage.setItem(STORAGE_NOTAS, JSON.stringify(notas));
-  }
-
-  function toggleAprobada(materiaCodigo) {
-    if (aprobadas.includes(materiaCodigo)) {
-      aprobadas = aprobadas.filter(c => c !== materiaCodigo);
-    } else {
-      aprobadas.push(materiaCodigo);
-    }
-    guardarEstado();
-    actualizarMalla();
-  }
-
-  function actualizarMalla() {
-    mallaDiv.innerHTML = "";
-    materias.forEach(materia => {
+    function crearMateria(materia) {
       const div = document.createElement("div");
-      div.classList.add("materia");
-      div.setAttribute("data-codigo", materia.codigo);
+      div.className = "materia bloqueada";
+      div.innerHTML = `<span>${materia.nombre}</span>`;
+      div.id = materia.id;
 
-      // Estado de materia
-      const aprobada = aprobadas.includes(materia.codigo);
-      const desbloqueada = estaDesbloqueada(materia);
+      const aprobada = estado[materia.id]?.aprobada;
+      const desbloqueada = verificarDesbloqueo(materia);
 
-      // Clase colores
       if (aprobada) {
+        div.classList.remove("bloqueada", "desbloqueada");
         div.classList.add("aprobada");
+        if (estado[materia.id]?.tachada) {
+          div.classList.add("tachada");
+        }
       } else if (desbloqueada) {
-        div.classList.add("habilitada");
-      } else {
-        div.classList.add("bloqueada");
+        div.classList.remove("bloqueada");
+        div.classList.add("desbloqueada");
       }
 
-      // Título y click para marcar aprobada SOLO si habilitada
-      const titulo = document.createElement("div");
-      titulo.textContent = materia.nombre;
-      titulo.classList.add("titulo");
-      div.appendChild(titulo);
+      const notas = document.createElement("div");
+      notas.className = "notas";
+      
+      const np = document.createElement("input");
+      np.placeholder = "N.P";
+      np.value = estado[materia.id]?.np || "";
+      np.onchange = (e) => guardarNota(materia.id, "np", e.target.value);
 
-      if (desbloqueada && !aprobada) {
-        div.style.cursor = "pointer";
-        div.onclick = () => {
-          toggleAprobada(materia.codigo);
-        };
-      } else {
-        div.style.cursor = "default";
-        div.onclick = null;
-      }
+      const nf = document.createElement("input");
+      nf.placeholder = "N.F";
+      nf.value = estado[materia.id]?.nf || "";
+      nf.onchange = (e) => guardarNota(materia.id, "nf", e.target.value);
 
-      // Notas inputs
-      const contNotas = document.createElement("div");
-      contNotas.classList.add("notas");
+      notas.appendChild(np);
+      notas.appendChild(nf);
+      div.appendChild(notas);
 
-      const inputParcial = document.createElement("input");
-      inputParcial.type = "number";
-      inputParcial.min = 0;
-      inputParcial.max = 10;
-      inputParcial.step = 0.1;
-      inputParcial.placeholder = "Parcial";
-      inputParcial.classList.add("nota-input");
-      inputParcial.value = notas[materia.codigo]?.parcial ?? "";
-      inputParcial.disabled = !desbloqueada && !aprobada;
+      div.onclick = (e) => {
+        if (e.target.tagName === 'INPUT') return;
+        if (div.classList.contains("bloqueada")) return;
+        
+        if (div.classList.contains("aprobada")) {
+          const tachada = !div.classList.contains("tachada");
+          div.classList.toggle("tachada");
+          estado[materia.id].tachada = tachada;
+        } else {
+          div.classList.remove("desbloqueada");
+          div.classList.add("aprobada");
+          estado[materia.id] = { aprobada: true, tachada: false };
+        }
+        localStorage.setItem("estadoMaterias", JSON.stringify(estado));
+        actualizarMalla();
+      };
 
-      inputParcial.addEventListener("change", e => {
-        let val = parseFloat(e.target.value);
-        if (isNaN(val) || val < 0) val = 0;
-        if (val > 10) val = 10;
-        e.target.value = val;
-        if (!notas[materia.codigo]) notas[materia.codigo] = {};
-        notas[materia.codigo].parcial = val;
-        guardarNotas();
-      });
-
-      const inputFinal = document.createElement("input");
-      inputFinal.type = "number";
-      inputFinal.min = 0;
-      inputFinal.max = 10;
-      inputFinal.step = 0.1;
-      inputFinal.placeholder = "Final";
-      inputFinal.classList.add("nota-input");
-      inputFinal.value = notas[materia.codigo]?.final ?? "";
-      inputFinal.disabled = !desbloqueada && !aprobada;
-
-      inputFinal.addEventListener("change", e => {
-        let val = parseFloat(e.target.value);
-        if (isNaN(val) || val < 0) val = 0;
-        if (val > 10) val = 10;
-        e.target.value = val;
-        if (!notas[materia.codigo]) notas[materia.codigo] = {};
-        notas[materia.codigo].final = val;
-        guardarNotas();
-      });
-
-      contNotas.appendChild(inputParcial);
-      contNotas.appendChild(inputFinal);
-      div.appendChild(contNotas);
-
-      mallaDiv.appendChild(div);
-    });
-  }
-
-  resetBtn.addEventListener("click", () => {
-    if (confirm("¿Querés reiniciar todo tu progreso y notas?")) {
-      aprobadas = [];
-      notas = {};
-      guardarEstado();
-      guardarNotas();
-      actualizarMalla();
+      return div;
     }
-  });
 
-  actualizarMalla();
-</script>
+    function guardarNota(id, tipo, valor) {
+      estado[id] = estado[id] || {};
+      estado[id][tipo] = valor;
+      localStorage.setItem("estadoMaterias", JSON.stringify(estado));
+    }
+
+    function verificarDesbloqueo(materia) {
+      return materia.correlativas.every(c => estado[c]?.aprobada);
+    }
+
+    function construirMalla() {
+      malla.innerHTML = "";
+      materias.forEach(anio => {
+        const col = document.createElement("div");
+        col.className = "year-column";
+        
+        const title = document.createElement("h3");
+        title.className = "year-title";
+        title.textContent = anio.anio;
+        col.appendChild(title);
+
+        anio.cuatris.forEach(cuatr => {
+          const cuatTitle = document.createElement("div");
+          cuatTitle.className = "cuatrimestre-title";
+          cuatTitle.textContent = cuatr.nombre;
+          col.appendChild(cuatTitle);
+
+          cuatr.cursos.forEach(m => {
+            col.appendChild(crearMateria(m));
+          });
+        });
+
+        malla.appendChild(col);
+      });
+    }
+
+    function reiniciar() {
+      if (confirm("¿Seguro que deseas reiniciar todo tu progreso?")) {
+        localStorage.removeItem("estadoMaterias");
+        location.reload();
+      }
+    }
+
+    function actualizarMalla() {
+      document.querySelectorAll(".materia").forEach(div => {
+        const id = div.id;
+        const materia = encontrarMateria(id);
+        
+        if (!materia) return;
+        
+        const aprobada = estado[id]?.aprobada;
+        const desbloqueada = verificarDesbloqueo(materia);
+        
+        div.className = "materia";
+        if (aprobada) {
+          div.classList.add("aprobada");
+          if (estado[id]?.tachada) div.classList.add("tachada");
+        } else if (desbloqueada) {
+          div.classList.add("desbloqueada");
+        } else {
+          div.classList.add("bloqueada");
+        }
+      });
+    }
+
+    function encontrarMateria(id) {
+      for (const anio of materias) {
+        for (const cuatr of anio.cuatris) {
+          const encontrada = cuatr.cursos.find(m => m.id === id);
+          if (encontrada) return encontrada;
+        }
+      }
+      return null;
+    }
+
+    construirMalla();
+  </script>
 </body>
 </html>
-
